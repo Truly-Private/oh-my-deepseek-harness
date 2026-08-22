@@ -7,7 +7,7 @@ The previous tutorials loaded a local plugin through a `--patch` overlay. This t
 Install the reviewed downstream CLI from npm before starting:
 
 ```sh
-npm install --global @truly-private/omdsh@0.0.1
+npm install --global @truly-private/omdsh@0.1.0
 dsh --version
 ```
 
@@ -186,5 +186,5 @@ If you would rather not ask users for the allowance, distribute built artifacts 
 
 ## Next steps
 
-- [Plugins and lifecycle](../framework/) — the full plugin lifecycle
+- [Plugins and lifecycle](../framework/index.md) — the full plugin lifecycle
 - [CLI behavior reference](../../../../apps/cli/reference/README.md) — exact layer precedence, flags, and profile mechanics

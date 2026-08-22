@@ -104,36 +104,35 @@ const GENERIC_SKIPS: readonly GenericSkip[] = [
   // GROUP_ORDER holds `packages/<group>/` directory names, not package names.
   { file: 'scripts/gen-module-graph.ts', upstream: ['cordis'] },
   { file: 'scripts/gen-doc-graphs.ts', upstream: ['cordis'] },
-  // `cordis/*` strings in the extension seam are event names, plugin ids, and
-  // generated documentation for those runtime identifiers, not package imports.
-  ...[
-    'docs/event-producer-consumer.md',
-    'docs/event-producer-consumer.zh.md',
-    'docs/subsystems/extensions.md',
-    'docs/subsystems/extensions.zh.md',
-    'packages/api/remotes/src/remote-events.ts',
-    'packages/client/ui-settings-plugin-inventory/src/client/PluginInventorySettingsTab.tsx',
-    'packages/extensions/cordis-client-runner/src/client/index.ts',
-    'packages/extensions/cordis-client-runner/src/client/runtime.ts',
-    'packages/extensions/cordis-client-runner/tests/orchestrator.client.spec.ts',
-    'packages/extensions/cordis-client-runner/tests/plugin.client.spec.ts',
-    'packages/extensions/cordis-host-runner/src/index.ts',
-    'packages/extensions/cordis-host-runner/src/inspect-registry.ts',
-    'packages/extensions/cordis-host-runner/src/types.ts',
-    'packages/extensions/cordis-host-runner/tests/helpers.ts',
-    'packages/extensions/cordis-host-runner/tests/runner.spec.ts',
-    'packages/extensions/cordis-host-runner/tests/versioning.spec.ts',
-    'packages/extensions/tool-cordis/src/api-catalog.ts',
-    'packages/extensions/tool-cordis/src/providers.ts',
-    'packages/extensions/ui-cordis/src/client/CordisActionRow.tsx',
-    'packages/extensions/ui-cordis/src/client/CordisDefineRow.tsx',
-    'packages/extensions/ui-cordis/src/client/CordisPanel.tsx',
-    'packages/extensions/ui-cordis/src/client/CordisRunRow.tsx',
-    'packages/extensions/ui-cordis/src/client/index.ts',
-    'packages/extensions/ui-cordis/src/client/inventory.ts',
-    'packages/extensions/ui-cordis/src/client/locales.ts',
-    'scripts/gen-cordis-catalog.ts',
-  ].map(file => ({ file, upstream: ['cordis'] })),
+  // `cordis/*` is the extensions event domain, not a package subpath. The
+  // generated catalogs and every producer/consumer must preserve that wire id.
+  { file: 'docs/event-producer-consumer.md', upstream: ['cordis'] },
+  { file: 'docs/event-producer-consumer.zh.md', upstream: ['cordis'] },
+  { file: 'docs/subsystems/extensions.md', upstream: ['cordis'] },
+  { file: 'docs/subsystems/extensions.zh.md', upstream: ['cordis'] },
+  { file: 'packages/api/remotes/src/remote-events.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-client-runner/src/client/index.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-client-runner/src/client/runtime.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-client-runner/tests/orchestrator.client.spec.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-client-runner/tests/plugin.client.spec.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-host-runner/src/index.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-host-runner/src/inspect-registry.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-host-runner/src/types.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-host-runner/tests/helpers.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-host-runner/tests/runner.spec.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/cordis-host-runner/tests/versioning.spec.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/tool-cordis/src/api-catalog.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/tool-cordis/src/providers.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/ui-cordis/src/client/index.ts', upstream: ['cordis'] },
+  { file: 'packages/extensions/ui-cordis/src/client/inventory.ts', upstream: ['cordis'] },
+  { file: 'scripts/gen-cordis-catalog.ts', upstream: ['cordis'] },
+  // The UI locale namespace and input-trigger source id are product keys.
+  { file: 'packages/client/ui-settings-plugin-inventory/src/client/PluginInventorySettingsTab.tsx', upstream: ['cordis'] },
+  { file: 'packages/extensions/ui-cordis/src/client/CordisActionRow.tsx', upstream: ['cordis'] },
+  { file: 'packages/extensions/ui-cordis/src/client/CordisDefineRow.tsx', upstream: ['cordis'] },
+  { file: 'packages/extensions/ui-cordis/src/client/CordisPanel.tsx', upstream: ['cordis'] },
+  { file: 'packages/extensions/ui-cordis/src/client/CordisRunRow.tsx', upstream: ['cordis'] },
+  { file: 'packages/extensions/ui-cordis/src/client/locales.ts', upstream: ['cordis'] },
 ]
 
 /** A string that must appear exactly `count` times once the rescope has run. */
@@ -296,29 +295,17 @@ const EXACT_EDITS: readonly ExactEdit[] = [
     expect: 1,
   },
   {
-    // The client purity gate reads `@deepseek-ai/` as "another plugin package".
-    // The rescope moves the vendored framework and its libraries into that
-    // namespace, where the gate would reject the library imports client
-    // bundles have always inlined, so it needs their names.
-    id: 'client-purity-vendored-libraries',
-    file: 'packages/client/tsdown.client.ts',
-    find: '/** Generated descriptor/codec contribution with no shared runtime identity. */',
-    replace: `/**
- * Vendored framework libraries: rescoped into @deepseek-ai, so the gate below
- * would read them as plugin packages. They carry no cross-plugin runtime
- * identity to share — the framework itself is a platform module (external),
- * while these are ordinary libraries a browser bundle inlines.
- */
-const VENDORED_LIBRARY = /^@deepseek-ai\\/(cosmokit|schemastery)(\\/|$)/
-
-/** Generated descriptor/codec contribution with no shared runtime identity. */`,
-    expect: 1,
-  },
-  {
+    // Upstream now owns VENDORED_LIBRARY. The downstream namespace guard must
+    // remain after it or the @deepseek-ai vendored libraries return early.
     id: 'client-purity-vendored-libraries-predicate',
     file: 'packages/client/tsdown.client.ts',
-    find: '        if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point',
+    find: `        if (!source.startsWith('@truly-private/')) return null
+        if (isRequested(source)) return null // requested module-table row: external wins
+        if (VENDORED_LIBRARY.test(source)) return null // vendored library: inline, no shared identity
+        if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point`,
     replace: `        if (VENDORED_LIBRARY.test(source)) return null // vendored library: inline, no shared identity
+        if (!source.startsWith('@truly-private/')) return null
+        if (isRequested(source)) return null // requested module-table row: external wins
         if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point`,
     expect: 1,
   },
@@ -350,7 +337,7 @@ const VENDORED_LIBRARY = /^@deepseek-ai\\/(cosmokit|schemastery)(\\/|$)/
     id: 'vendoring-cookbook-name-invariant-zh',
     file: 'docs/cookbook/adding-a-vendored-package.zh.md',
     find: '保留上游的 `name`/`version`/`exports`/`type`',
-    replace: '改写 `name` 的 scope（[映射](../rescope.md)），保留上游的 `version`/`exports`/`type`',
+    replace: '改写 `name` 的 scope（[映射](../rescope.zh.md)），保留上游的 `version`/`exports`/`type`',
     expect: 1,
   },
   {
