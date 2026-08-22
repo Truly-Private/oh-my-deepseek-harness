@@ -9,8 +9,8 @@ The `dsh` command is the product launcher for profiles: ordered stacks of plugin
 Run the reviewed downstream package without a global installation:
 
 ```sh
-npx --yes @truly-private/omdsh@0.0.1 web
-npx --yes @truly-private/omdsh@0.0.1 --profile headless "job"
+npx --yes @truly-private/omdsh@0.1.0 web
+npx --yes @truly-private/omdsh@0.1.0 --profile headless "job"
 ```
 
 The package installs the `dsh` binary. A global installation may therefore use the shorter commands in the reference below.

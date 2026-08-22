@@ -7,7 +7,7 @@
 开始前，从 npm 安装已评审的下游 CLI：
 
 ```sh
-npm install --global @truly-private/omdsh@0.0.1
+npm install --global @truly-private/omdsh@0.1.0
 dsh --version
 ```
 

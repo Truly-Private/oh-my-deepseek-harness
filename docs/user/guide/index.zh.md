@@ -7,7 +7,7 @@
 在 agent 可以编辑的目录中，直接从 npm 运行已评审的下游包：
 
 ```sh
-npx --yes @truly-private/omdsh@0.0.1 web
+npx --yes @truly-private/omdsh@0.1.0 web
 ```
 
 命令会打印 Web UI URL；默认地址是 `http://127.0.0.1:3080`。`dsh` 进程会把启动时所在的目录作为默认文件系统位置；全新的 Web UI 则不会选中任何工作区，你需要添加一个工作区。[根目录快速上手](../../../README.zh.md#run)介绍使用同一个 npm 包配置 9Router、运行无界面任务及可审计多 agent 协作。

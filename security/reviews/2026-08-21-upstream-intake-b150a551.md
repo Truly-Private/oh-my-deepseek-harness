@@ -1,6 +1,6 @@
 # Upstream intake security review for b150a551
 
-Review state: `candidate`
+Review state: `reviewed`
 
 Previously reviewed primary commit: `47f943859bef60e4160492346772ded9b24f765a`
 
@@ -10,7 +10,7 @@ Inspiration commit: `de9e880c19cdd37166caf3912fbbb794ed388c32`
 
 ## Intake scope
 
-The candidate advances the primary upstream by 854 commits and preserves both upstream and downstream ancestry in a merge commit. Conflict resolution retains downstream package scope, repository metadata, product branding, security policy, release tooling, and integration claims. Newly accepted upstream packages use the `@truly-private/omdsh-*` scope and downstream repository URL. The upstream browser brand-slot package renders the downstream logo and product name instead of restoring DeepSeek artwork.
+The reviewed intake advances the primary upstream by 854 commits and preserves both upstream and downstream ancestry in a merge commit. Conflict resolution retains downstream package scope, repository metadata, product branding, security policy, release tooling, and integration claims. Newly accepted upstream packages use the `@truly-private/omdsh-*` scope and downstream repository URL. The upstream browser brand-slot package renders the downstream logo and product name instead of restoring DeepSeek artwork.
 
 The inspiration repository remains comparison material and is not the code merge base. This intake does not imply endorsement by DeepSeek AI, Yuan Chenglu, or either contributor community.
 
@@ -20,7 +20,7 @@ The following evidence was collected through downstream CodeQL remediation commi
 
 | Check | State |
 | --- | --- |
-| Upstream lock validation and validator tests | Passed in candidate state; all 12 security-validator tests passed. |
+| Upstream lock validation and validator tests | Passed before approval in candidate state; all 12 security-validator tests passed. The reviewed lock was validated again after recording the approval and exact evidence. |
 | Full-history Gitleaks scan | Gitleaks 8.30.1 scanned 7,233 commits and about 160.42 MB after its official release checksum was verified; no undisposed leaks were found. |
 | Production dependency audit and lockfile policy | Passed with zero known low, moderate, high, or critical findings. |
 | Repository static and documentation gates | `pnpm run check:ci:static` passed all 37 gates. |
@@ -28,7 +28,7 @@ The following evidence was collected through downstream CodeQL remediation commi
 | GitHub Actions supply-chain review | All 122 mutable external action references accepted from upstream were replaced with full 40-character commit pins; a repository test rejects future mutable refs. |
 | Pi/OMP host bridge tests | All 27 tests passed. |
 | Hermes plugin tests | All 8 tests passed under the Proto-managed Python 3.10.21 runtime. |
-| Targeted review of credentials, subprocesses, filesystem permissions, network parsing, executable loading, and release workflows | Path and workflow triage completed; the per-commit human review remains pending. |
+| Targeted review of credentials, subprocesses, filesystem permissions, network parsing, executable loading, and release workflows | Path and workflow review completed. The accepted CodeQL disposition and remaining operational limitations are recorded below. |
 | Official production build | `pnpm run build:official` passed for the host, client, and web application bundles. Vite reported size warnings but no build failure. |
 | Repository hygiene | `pnpm run hygiene` passed all 13 gates. |
 | Keyless snapshot tests | Thirteen of fourteen files passed in the aggregate run with 126 tests passed and 2 skipped. The remaining deterministic translation-prompt snapshot was refreshed for the downstream README and its exact test passed twice afterward. The complete aggregate suite was not rerun after that isolated correction. |
@@ -37,12 +37,22 @@ The following evidence was collected through downstream CodeQL remediation commi
 
 ## Remote evidence
 
-The exact-head [security workflow run 32553453583](https://github.com/Truly-Private/oh-my-deepseek-harness/actions/runs/32553453583) passed on `0cb7d79d7f49318469364325c26fbf2709ccf893`: provenance and policy, full-history Gitleaks, pull-request dependency review, the production dependency audit, JavaScript/TypeScript CodeQL, and Python CodeQL all completed successfully.
+The remediation [security workflow run 32553453583](https://github.com/Truly-Private/oh-my-deepseek-harness/actions/runs/32553453583) passed on `0cb7d79d7f49318469364325c26fbf2709ccf893`: provenance and policy, full-history Gitleaks, pull-request dependency review, the production dependency audit, JavaScript/TypeScript CodeQL, and Python CodeQL all completed successfully.
 
 The preceding analysis exposed alerts 45–50. Alerts 45–49 were high-severity regular-expression findings in the PowerShell persistent-tool fixture, web index injection renderer, Files API client, and upload index; alert 50 was a medium-severity unsafe-code-construction finding in the dynamic-package precheck. Commit `0cb7d79d7f49318469364325c26fbf2709ccf893` replaced every reported superlinear expression and removed the redundant host-realm `Function` constructor. The next analysis removed alerts 45–50 from the open inventory and reported alert 51 on the remaining compile-only `vm.Script` call.
 
 Alert 51 received a finding-specific `won't fix` disposition because compiling and later executing model-written plugin code is the named feature, the host-runner README requires bash-level trust and states that `node:vm` is not a security boundary, and the browser half does not load this host module. The GitHub disposition records that rationale and the remediation commit; no CodeQL query or path was excluded. After the disposition, the pull request's open CodeQL alert count was zero and the separate GitHub Advanced Security CodeQL check completed successfully.
 
+The final pull-request head `80486bb6c3131e322ebbd851d5c3945752f1812a` passed the complete required pull-request suite on [PR 16](https://github.com/Truly-Private/oh-my-deepseek-harness/pull/16), including dependency review, static checks, coverage, snapshots, package assembly, clean-room host installation, Gitleaks, the production dependency audit, both CodeQL languages, and the Windows native lane. The exact-head [security workflow run 32587848042](https://github.com/Truly-Private/oh-my-deepseek-harness/actions/runs/32587848042) completed successfully.
+
+The downstream merge commit `82c7fc0e4379548012a8b188e9ed7b857259091c` contains the reviewed upstream commit and passed the post-merge [security workflow run 32601446926](https://github.com/Truly-Private/oh-my-deepseek-harness/actions/runs/32601446926). Provenance and policy, full-history Gitleaks, the production dependency audit, and both CodeQL languages passed. Dependency review is a pull-request-only job and was therefore skipped on the push after passing on the exact pull-request head. The open CodeQL alert inventory was zero when the review was approved.
+
+## Remaining limitations
+
+The scheduled real DeepSeek API workflow cannot run because this downstream repository does not configure `DEEPSEEK_API_KEY_EXTERNAL`. Its preflight fails closed instead of reporting a false green. This absence does not affect the keyless test, static analysis, package assembly, or security evidence above, and no real DeepSeek API result is claimed.
+
+The accepted `node:vm` CodeQL disposition applies only to the documented trusted host-runner feature. It does not make model-written plugin code safe for untrusted execution. A reviewed release is not a claim that the software is secure or vulnerability-free.
+
 ## Release decision
 
-The candidate is not reviewed, secure, vulnerability-free, or release-ready. `security/upstream-lock.json` remains in `candidate` state. A release labeled reviewed requires complete commit-matched evidence and explicit human maintainer approval.
+On 2026-08-22, the authenticated repository maintainer explicitly authorized the `0.1.0` release after the exact-head pull-request checks and post-merge security workflow completed. `security/upstream-lock.json` records `b150a551b8d465e31e418e1b2eaf5e79bbb7d28e` as reviewed with the evidence above. This approval permits a reviewed downstream release from a descendant commit that preserves this lock and passes its release-specific checks.

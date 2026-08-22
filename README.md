@@ -28,7 +28,7 @@ DeepSeek Harness is currently in _developer preview_ and is iterating rapidly. *
 
 > [!NOTE]
 >
-> The reviewed downstream package is `@truly-private/omdsh`. npm package names are lowercase, so use this spelling even though the GitHub organization is `Truly-Private`. Pin `@0.0.1` when you need the exact first release.
+> The reviewed downstream package is `@truly-private/omdsh`. npm package names are lowercase, so use this spelling even though the GitHub organization is `Truly-Private`. Pin `@0.1.0` to install this release exactly.
 
 ### Use DeepSeek Harness with 9Router
 
@@ -39,7 +39,7 @@ This path sends model requests through [9Router](https://github.com/decolua/9rou
 Install Node.js `^22.19.0` or `>=24.0.0`, then verify npm can resolve this distribution:
 
 ```sh
-npx @truly-private/omdsh web
+npx --yes @truly-private/omdsh@0.1.0 web
 ```
 
 The command starts the Web UI at `http://127.0.0.1:3080` by default and opens it in the default browser for a local launch. An SSH launch only prints the host URL because the SSH client or editor owns the local forwarded address. Pass `--no-open` to run the server without opening a browser. See [Web UI guide](docs/user/guide/index.md).

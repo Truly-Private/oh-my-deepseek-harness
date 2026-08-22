@@ -2,7 +2,7 @@
 
 [English](npm-distribution.md) | 中文
 
-本指南记录下游 CLI 如何以 `@truly-private/omdsh` 发布。`0.0.1` 是完整下游包族的首次公开发布。
+本指南记录下游 CLI 如何以 `@truly-private/omdsh` 发布。当前发布流程面向完整下游包族的 `0.1.0` 版本。
 
 ## 包身份
 
@@ -32,13 +32,13 @@ pnpm run release:pack --family dsh --out dist/npm-omdsh
 pnpm run release:pack --family vendor --out dist/npm-vendor
 ```
 
-3. 使用 packed CLI 与 vendored framework tarball 执行 clean install。发布前，发布检查必须报告 `@truly-private/omdsh 0.0.1`。
+3. 使用 packed CLI 与 vendored framework tarball 执行 clean install。发布前，发布检查必须报告 `@truly-private/omdsh 0.1.0`。
 4. 使用 `scripts/release/publish.ts` 发布未改变的 dsh tarball。npm 凭据必须保存在仓库之外；切勿把 token 放入本 checkout 下的 `.npmrc`、tracked shell 文件、日志或文档。
 5. 在仓库外验证 registry 与 executable：
 
 ```sh
-npm view @truly-private/omdsh@0.0.1 version
-npx --yes @truly-private/omdsh@0.0.1 --profile headless --dump-config
+npm view @truly-private/omdsh@0.1.0 version
+npx --yes @truly-private/omdsh@0.1.0 --profile headless --dump-config
 ```
 
 [下游 npm scope Agent Note](../../.agents/notes/implemented/process/2026-08-20-downstream-npm-scope.zh.md)记录了完整发布族一起迁移以及 vendored 包保留既有名称的原因。

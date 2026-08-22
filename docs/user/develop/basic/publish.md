@@ -7,7 +7,7 @@ The previous tutorials loaded a local plugin through a `--patch` overlay. This t
 Install the reviewed downstream CLI from npm before starting:
 
 ```sh
-npm install --global @truly-private/omdsh@0.0.1
+npm install --global @truly-private/omdsh@0.1.0
 dsh --version
 ```
 
