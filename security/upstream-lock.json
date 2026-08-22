@@ -12,10 +12,15 @@
     "commit": "de9e880c19cdd37166caf3912fbbb794ed388c32"
   },
   "review": {
-    "status": "candidate",
-    "reviewedCommit": null,
-    "reviewedAt": null,
-    "evidence": []
+    "status": "reviewed",
+    "reviewedCommit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+    "reviewedAt": "2026-08-22T22:12:08Z",
+    "evidence": [
+      "security/reviews/2026-08-21-upstream-intake-b150a551.md",
+      "https://github.com/Truly-Private/oh-my-deepseek-harness/pull/16",
+      "https://github.com/Truly-Private/oh-my-deepseek-harness/actions/runs/32587848042",
+      "https://github.com/Truly-Private/oh-my-deepseek-harness/actions/runs/32601446926"
+    ]
   },
   "policy": {
     "automaticMerge": false,

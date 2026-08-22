@@ -28,7 +28,7 @@ DeepSeek Harness 目前处于 _开发者预览_ 阶段，正在快速迭代。**
 
 > [!NOTE]
 >
-> 已评审的下游包是 `@truly-private/omdsh`。npm 包名必须小写，因此即使 GitHub 组织名是 `Truly-Private`，也要使用此拼写。如需锁定首次发布的准确版本，请使用 `@0.0.1`。
+> 已评审的下游包是 `@truly-private/omdsh`。npm 包名必须小写，因此即使 GitHub 组织名是 `Truly-Private`，也要使用此拼写。请使用 `@0.1.0` 准确安装此版本。
 
 ### 通过 9Router 使用 DeepSeek Harness
 
@@ -39,7 +39,7 @@ DeepSeek Harness 目前处于 _开发者预览_ 阶段，正在快速迭代。**
 安装 Node.js `^22.19.0` 或 `>=24.0.0`，然后确认 npm 能解析此发行版：
 
 ```sh
-npx @truly-private/omdsh web
+npx --yes @truly-private/omdsh@0.1.0 web
 ```
 
 该命令默认会在 `http://127.0.0.1:3080` 启动 Web UI，本机启动时还会用默认浏览器打开页面。通过 SSH 启动时只打印宿主机 URL，因为本地转发地址由 SSH 客户端或编辑器持有。传入 `--no-open` 可仅运行服务器而不打开浏览器。详见 [Web UI 指南](docs/user/guide/index.zh.md)。

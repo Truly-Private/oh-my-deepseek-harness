@@ -2,7 +2,7 @@
 
 English | [中文](npm-distribution.zh.md)
 
-This guide records how the downstream CLI is released as `@truly-private/omdsh`. Version `0.0.1` is the first public release of the complete downstream package family.
+This guide records how the downstream CLI is released as `@truly-private/omdsh`. The current release procedure targets version `0.1.0` across the complete downstream package family.
 
 ## Package identity
 
@@ -32,13 +32,13 @@ pnpm run release:pack --family dsh --out dist/npm-omdsh
 pnpm run release:pack --family vendor --out dist/npm-vendor
 ```
 
-3. Clean-install the packed CLI with its vendored framework tarballs. The release check must report `@truly-private/omdsh 0.0.1` before publication.
+3. Clean-install the packed CLI with its vendored framework tarballs. The release check must report `@truly-private/omdsh 0.1.0` before publication.
 4. Publish the unchanged dsh tarballs with `scripts/release/publish.ts`. Keep npm credentials outside the repository; never put a token in `.npmrc` under this checkout, a tracked shell file, logs, or documentation.
 5. From outside the repository, verify the registry and executable:
 
 ```sh
-npm view @truly-private/omdsh@0.0.1 version
-npx --yes @truly-private/omdsh@0.0.1 --profile headless --dump-config
+npm view @truly-private/omdsh@0.1.0 version
+npx --yes @truly-private/omdsh@0.1.0 --profile headless --dump-config
 ```
 
 The [downstream npm scope Agent Note](../../.agents/notes/implemented/process/2026-08-20-downstream-npm-scope.md) records why the complete family moves together and why vendored packages keep their existing names.

@@ -9,8 +9,8 @@
 无需全局安装即可运行已评审的下游包：
 
 ```sh
-npx --yes @truly-private/omdsh@0.0.1 web
-npx --yes @truly-private/omdsh@0.0.1 --profile headless "job"
+npx --yes @truly-private/omdsh@0.1.0 web
+npx --yes @truly-private/omdsh@0.1.0 --profile headless "job"
 ```
 
 该包会安装 `dsh` 可执行文件，因此全局安装后可以使用下方参考中的较短命令。

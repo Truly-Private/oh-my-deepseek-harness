@@ -295,29 +295,17 @@ const EXACT_EDITS: readonly ExactEdit[] = [
     expect: 1,
   },
   {
-    // The client purity gate reads `@deepseek-ai/` as "another plugin package".
-    // The rescope moves the vendored framework and its libraries into that
-    // namespace, where the gate would reject the library imports client
-    // bundles have always inlined, so it needs their names.
-    id: 'client-purity-vendored-libraries',
-    file: 'packages/client/tsdown.client.ts',
-    find: '/** Generated descriptor/codec contribution with no shared runtime identity. */',
-    replace: `/**
- * Vendored framework libraries: rescoped into @deepseek-ai, so the gate below
- * would read them as plugin packages. They carry no cross-plugin runtime
- * identity to share — the framework itself is a requested module-table row
- * (external), while these are ordinary libraries a browser bundle inlines.
- */
-const VENDORED_LIBRARY = /^@deepseek-ai\\/(cosmokit|schemastery)(\\/|$)/
-
-/** Generated descriptor/codec contribution with no shared runtime identity. */`,
-    expect: 1,
-  },
-  {
+    // Upstream now owns VENDORED_LIBRARY. The downstream namespace guard must
+    // remain after it or the @deepseek-ai vendored libraries return early.
     id: 'client-purity-vendored-libraries-predicate',
     file: 'packages/client/tsdown.client.ts',
-    find: '        if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point',
+    find: `        if (!source.startsWith('@truly-private/')) return null
+        if (isRequested(source)) return null // requested module-table row: external wins
+        if (VENDORED_LIBRARY.test(source)) return null // vendored library: inline, no shared identity
+        if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point`,
     replace: `        if (VENDORED_LIBRARY.test(source)) return null // vendored library: inline, no shared identity
+        if (!source.startsWith('@truly-private/')) return null
+        if (isRequested(source)) return null // requested module-table row: external wins
         if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point`,
     expect: 1,
   },

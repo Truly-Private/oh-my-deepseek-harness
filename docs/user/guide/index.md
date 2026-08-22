@@ -7,7 +7,7 @@ English | [中文](index.zh.md)
 From the directory the agent may edit, run the reviewed downstream package directly from npm:
 
 ```sh
-npx --yes @truly-private/omdsh@0.0.1 web
+npx --yes @truly-private/omdsh@0.1.0 web
 ```
 
 The command prints the Web UI URL; the default is `http://127.0.0.1:3080`. The `dsh` process uses its invoking directory as the default filesystem location, but a fresh Web UI has no selected workspace until you add one. The [root quick start](../../../README.md#run) covers 9Router setup, headless tasks, and auditable multi-agent orchestration with the same npm package.
