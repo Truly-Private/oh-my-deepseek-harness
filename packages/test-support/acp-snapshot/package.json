@@ -34,7 +34,7 @@
   "dependencies": {
     "@agentclientprotocol/sdk": "0.25.1",
     "@truly-private/omdsh-loader-smoke": "workspace:*",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "@truly-private/omdsh-invariants": "workspace:^",
