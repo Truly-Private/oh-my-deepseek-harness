@@ -54,7 +54,7 @@
   "license": "MIT",
   "dependencies": {
     "@truly-private/omdsh-typert-protocol": "workspace:^",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   },
   "peerDependencies": {
     "@truly-private/omdsh-invariants": "workspace:^",

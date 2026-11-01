@@ -46,7 +46,7 @@
     "@deepseek-ai/cordis": "workspace:^"
   },
   "dependencies": {
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@truly-private/omdsh-brand": "workspace:^",

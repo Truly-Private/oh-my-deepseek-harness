@@ -45,6 +45,6 @@
     "@truly-private/omdsh-invariants": "workspace:^",
     "@truly-private/omdsh-typert-registry": "workspace:^",
     "@deepseek-ai/cordis": "workspace:^",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   }
 }
